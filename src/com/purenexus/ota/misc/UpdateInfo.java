@@ -324,7 +324,7 @@ public class UpdateInfo implements Parcelable, Serializable {
             info.mDeveloper = mDeveloper;
             info.mMD5 = mMD5;
             info.mAddons = mAddons;
-            info.mAndroidVersion = androidVersion;
+            info.mAndroidVersion = mAndroidVersion;
             return info;
         }
     }
