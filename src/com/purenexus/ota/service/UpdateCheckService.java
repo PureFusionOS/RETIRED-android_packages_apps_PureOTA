@@ -225,6 +225,7 @@ public class UpdateCheckService extends IntentService
                 .setDonateUrl(obj.isNull("donate_url") ? "" : obj.getString("donate_url"))
                 .setWebsiteUrl(obj.isNull("website_url") ? "" : obj.getString("website_url"))
                 .setAddons(addons)
+                .setAndroidVersion(obj.getString("android_version"))
                 .build();
             updates.add(ui);
         } catch (JSONException e) {
