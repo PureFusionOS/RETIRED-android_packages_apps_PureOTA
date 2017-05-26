@@ -78,6 +78,7 @@ public class UpdatePreference extends Preference implements OnClickListener, OnL
     private String mUpdateFileName;
     private long mUpdateFileSize;
     private String mUpdateChangelogUrl;
+    private String mUpdateAndroidVersion;
 
     private boolean buttonClicked = false;
 
@@ -128,6 +129,7 @@ public class UpdatePreference extends Preference implements OnClickListener, OnL
         mUpdateFileName = mUpdateInfo.getFileName();
         mUpdateFileSize = mUpdateInfo.getFileSize();
         mUpdateChangelogUrl = mUpdateInfo.getChangelogUrl();
+        mUpdateAndroidVersion = mUpdateInfo.getAndroidVersion();
         // We only show updates of type Utils.getUpdateType(), so just use that here
         mBuildVersionName = Utils.getInstalledVersion();
         mBuildDateString = Utils.getDateLocalized(mContext,mUpdateInfo.getDateTimestamp());
@@ -277,7 +279,7 @@ public class UpdatePreference extends Preference implements OnClickListener, OnL
                 mButton.setVisibility(View.VISIBLE);
                 mSummaryText.setText(String.format("%1$s • %2$s\nAndroid %3$s %4$s",
                     mBuildDateString, Formatter.formatFileSize(mContext,mUpdateFileSize),
-                    Utils.getAndroidVersion(mUpdateFileName), mContext.getString(R.string.type_downloaded)));
+                    mUpdateAndroidVersion, mContext.getString(R.string.type_downloaded)));
                 mButton.setText(mContext.getString(R.string.install_button));
                 break;
 
@@ -287,7 +289,7 @@ public class UpdatePreference extends Preference implements OnClickListener, OnL
                 mProgressBar.setVisibility(View.VISIBLE);
                 mSummaryText.setText(String.format("%1$s • %2$s\nAndroid %3$s %4$s",
                     mBuildDateString, Formatter.formatFileSize(mContext,mUpdateFileSize),
-                    Utils.getAndroidVersion(mUpdateFileName), mContext.getString(R.string.type_downloading)));
+                    mUpdateAndroidVersion, mContext.getString(R.string.type_downloading)));
                 break;
 
             case STYLE_INSTALLED:
@@ -296,7 +298,7 @@ public class UpdatePreference extends Preference implements OnClickListener, OnL
                 mButton.setVisibility(View.GONE);
                 mSummaryText.setText(String.format("%1$s • %2$s\nAndroid %3$s %4$s",
                     mBuildDateString, Formatter.formatFileSize(mContext,mUpdateFileSize),
-                    Utils.getAndroidVersion(mUpdateFileName), mContext.getString(R.string.type_installed))); //
+                    mUpdateAndroidVersion, mContext.getString(R.string.type_installed))); //
                 break;
 
             case STYLE_COMPLETING:
@@ -306,7 +308,7 @@ public class UpdatePreference extends Preference implements OnClickListener, OnL
                 mButton.setVisibility(View.GONE);
                 mSummaryText.setText(String.format("%1$s • %2$s\nAndroid %3$s %4$s",
                     mBuildDateString, Formatter.formatFileSize(mContext,mUpdateFileSize),
-                    Utils.getAndroidVersion(mUpdateFileName), mContext.getString(R.string.type_completing)));
+                    mUpdateAndroidVersion, mContext.getString(R.string.type_completing)));
                 break;
 
             case STYLE_NEW:
@@ -316,7 +318,7 @@ public class UpdatePreference extends Preference implements OnClickListener, OnL
                 mButton.setVisibility(View.VISIBLE);
                 mSummaryText.setText(String.format("%1$s • %2$s\nAndroid %3$s",
                     mBuildDateString, Formatter.formatFileSize(mContext,mUpdateFileSize),
-                    Utils.getAndroidVersion(mUpdateFileName)));
+                    mUpdateAndroidVersion));
                 mButton.setText(mContext.getString(R.string.download_button));
                 break;
         }

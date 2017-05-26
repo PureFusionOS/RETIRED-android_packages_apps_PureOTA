@@ -42,6 +42,7 @@ public class UpdateInfo implements Parcelable, Serializable {
     private String mDeveloper;
     private String mMD5;
     private String mAddons;
+    private String mAndroidVersion;
 
     private Boolean mIsNewerThanInstalled;
 
@@ -162,6 +163,13 @@ public class UpdateInfo implements Parcelable, Serializable {
         return mAddons;
     }
 
+    /**
+     * Get android version
+     */
+    public String getAndroidVersion() {
+        return mAndroidVersion;
+    }
+
     public boolean isNewerThanInstalled() {
         if (mIsNewerThanInstalled != null) {
             return mIsNewerThanInstalled;
@@ -219,6 +227,7 @@ public class UpdateInfo implements Parcelable, Serializable {
         out.writeString(mDeveloper);
         out.writeString(mMD5);
         out.writeString(mAddons);
+        out.writeString(mAndroidVersion);
     }
 
     private void readFromParcel(Parcel in) {
@@ -232,6 +241,7 @@ public class UpdateInfo implements Parcelable, Serializable {
         mDeveloper = in.readString();
         mMD5 = in.readString();
         mAddons = in.readString();
+        mAndroidVersion = in.readString();
     }
 
     public static class Builder {
@@ -245,6 +255,7 @@ public class UpdateInfo implements Parcelable, Serializable {
         private String mDeveloper;
         private String mMD5;
         private String mAddons;
+        private String mAndroidVersion;
 
         public Builder setFileName(String fileName) {
             mFileName = fileName;
@@ -296,6 +307,11 @@ public class UpdateInfo implements Parcelable, Serializable {
             return this;
         }
 
+        public Builder setAndroidVersion(String androidVersion) {
+            mAndroidVersion = androidVersion;
+            return this;
+        }
+
         public UpdateInfo build() {
             UpdateInfo info = new UpdateInfo();
             info.mFileName = mFileName;
@@ -308,6 +324,7 @@ public class UpdateInfo implements Parcelable, Serializable {
             info.mDeveloper = mDeveloper;
             info.mMD5 = mMD5;
             info.mAddons = mAddons;
+            info.mAndroidVersion = androidVersion;
             return info;
         }
     }

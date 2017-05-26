@@ -630,6 +630,7 @@ public class UpdatesSettings extends PreferenceFragmentCompat implements
                 .setDonateUrl(update.getDonateUrl())
                 .setWebsiteUrl(update.getWebsiteUrl())
                 .setAddons(update.getAddonsInJson())
+                .setAndroidVersion(update.getAndroidVersion())
                 .build();
                 updates.add(ui);
             }else{

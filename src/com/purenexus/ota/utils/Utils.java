@@ -211,10 +211,6 @@ public class Utils {
         }
     }
 
-    public static String getAndroidVersion(String versionName) {
-        return versionName.split("-")[1];
-    }
-
     public static String getUserAgentString(Context context) {
         try {
             PackageManager pm = context.getPackageManager();
