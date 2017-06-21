@@ -11,32 +11,23 @@
 package com.purenexus.ota.receiver;
 
 import android.app.DownloadManager;
-import android.app.StatusBarManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.purenexus.ota.R;
 import com.purenexus.ota.misc.Constants;
 import com.purenexus.ota.misc.UpdateInfo;
 import com.purenexus.ota.service.DownloadCompleteIntentService;
 import com.purenexus.ota.service.DownloadService;
-import com.purenexus.ota.utils.Utils;
 
-import java.io.IOException;
-
-public class DownloadReceiver extends BroadcastReceiver{
-    private static final String TAG = "DownloadReceiver";
-
+public class DownloadReceiver extends BroadcastReceiver {
     public static final String ACTION_START_DOWNLOAD = "com.purenexus.ota.action.START_DOWNLOAD";
     public static final String EXTRA_UPDATE_INFO = "update_info";
-
     public static final String ACTION_DOWNLOAD_STARTED = "com.purenexus.ota.action.DOWNLOAD_STARTED";
     static final String EXTRA_FILENAME = "filename";
+    private static final String TAG = "DownloadReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {

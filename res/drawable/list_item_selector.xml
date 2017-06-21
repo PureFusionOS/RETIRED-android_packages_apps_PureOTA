@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright 2014 Magnus Woxblom
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright 2014 Magnus Woxblom
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -16,12 +15,12 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
         <shape>
-            <solid android:color="@color/list_item_background"/>
+            <solid android:color="@color/list_item_background" />
         </shape>
     </item>
     <item>
         <shape>
-            <solid android:color="@android:color/white"/>
+            <solid android:color="@android:color/white" />
         </shape>
     </item>
 </selector>

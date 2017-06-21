@@ -17,7 +17,6 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
 import com.purenexus.ota.R;
-import com.purenexus.ota.misc.UpdateInfo;
 
 import java.io.File;
 
@@ -28,7 +27,7 @@ public class DownloadNotifier {
     }
 
     public static void notifyDownloadComplete(Context context,
-            Intent updateIntent, File updateFile) {
+                                              Intent updateIntent, File updateFile) {
 
         NotificationCompat.Builder builder = createBaseContentBuilder(context, updateIntent)
                 .setSmallIcon(R.drawable.ic_system_update)
@@ -41,7 +40,7 @@ public class DownloadNotifier {
     }
 
     public static void notifyDownloadError(Context context,
-            Intent updateIntent, int failureMessageResId) {
+                                           Intent updateIntent, int failureMessageResId) {
         NotificationCompat.Builder builder = createBaseContentBuilder(context, updateIntent)
                 .setSmallIcon(android.R.drawable.stat_notify_error)
                 .setContentTitle(context.getString(R.string.not_download_failure))
@@ -53,7 +52,7 @@ public class DownloadNotifier {
     }
 
     private static NotificationCompat.Builder createBaseContentBuilder(Context context,
-            Intent updateIntent) {
+                                                                       Intent updateIntent) {
         PendingIntent contentIntent = PendingIntent.getActivity(context, 1,
                 updateIntent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_UPDATE_CURRENT);
 

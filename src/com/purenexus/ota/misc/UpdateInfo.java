@@ -10,28 +10,32 @@
 
 package com.purenexus.ota.misc;
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.purenexus.ota.utils.Utils;
 
-import java.io.File;
-import java.io.Serializable;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class UpdateInfo implements Parcelable, Serializable {
+    public static final Parcelable.Creator<UpdateInfo> CREATOR = new Parcelable.Creator<UpdateInfo>() {
+        public UpdateInfo createFromParcel(Parcel in) {
+            return new UpdateInfo(in);
+        }
+
+        public UpdateInfo[] newArray(int size) {
+            return new UpdateInfo[size];
+        }
+    };
     private String mFileName;
     private long mFileSize;
     private String mBuildDate;
@@ -43,7 +47,6 @@ public class UpdateInfo implements Parcelable, Serializable {
     private String mMD5;
     private String mAddons;
     private String mAndroidVersion;
-
     private Boolean mIsNewerThanInstalled;
 
     private UpdateInfo() {
@@ -86,7 +89,7 @@ public class UpdateInfo implements Parcelable, Serializable {
      * Get build date in timestamp format
      */
     public long getDateTimestamp() {
-        return Utils.getTimestampFromDateString(mBuildDate,Constants.FILENAME_DATE_FORMAT);
+        return Utils.getTimestampFromDateString(mBuildDate, Constants.FILENAME_DATE_FORMAT);
     }
 
     /**
@@ -131,12 +134,12 @@ public class UpdateInfo implements Parcelable, Serializable {
         return mMD5;
     }
 
-     /**
+    /**
      * Get addons list
      */
-    public List<Map<String,String>> getAddons() {
-        List<Map<String,String>> addons = new ArrayList<Map<String,String>>();
-        try{
+    public List<Map<String, String>> getAddons() {
+        List<Map<String, String>> addons = new ArrayList<Map<String, String>>();
+        try {
             JSONArray addonsListJson = new JSONArray(mAddons);
             int length = addonsListJson.length();
             for (int i = 0; i < length; i++) {
@@ -144,19 +147,19 @@ public class UpdateInfo implements Parcelable, Serializable {
                     continue;
                 }
                 JSONObject addon = addonsListJson.getJSONObject(i);
-                Map<String,String> map = new HashMap<String,String>();
+                Map<String, String> map = new HashMap<String, String>();
                 map.put("title", addon.getString("title"));
                 map.put("summary", addon.getString("summary"));
                 map.put("url", addon.getString("url"));
-                addons.add(i,map);
+                addons.add(i, map);
             }
-        }catch(Exception ex){
-            addons = new ArrayList<Map<String,String>>();
+        } catch (Exception ex) {
+            addons = new ArrayList<Map<String, String>>();
         }
         return addons;
     }
 
-     /**
+    /**
      * Get addons list in json
      */
     public String getAddonsInJson() {
@@ -199,16 +202,6 @@ public class UpdateInfo implements Parcelable, Serializable {
                 && mBuildDate == ui.mBuildDate
                 && TextUtils.equals(mDownloadUrl, ui.mDownloadUrl);
     }
-
-    public static final Parcelable.Creator<UpdateInfo> CREATOR = new Parcelable.Creator<UpdateInfo>() {
-        public UpdateInfo createFromParcel(Parcel in) {
-            return new UpdateInfo(in);
-        }
-
-        public UpdateInfo[] newArray(int size) {
-            return new UpdateInfo[size];
-        }
-    };
 
     @Override
     public int describeContents() {

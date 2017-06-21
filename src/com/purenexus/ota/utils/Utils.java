@@ -13,60 +13,48 @@ package com.purenexus.ota.utils;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.PowerManager;
 import android.os.SystemProperties;
 import android.preference.PreferenceManager;
-import android.util.Log;
-import android.webkit.URLUtil;
-import android.os.Environment;
-import android.net.Uri;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.database.Cursor;
-import android.content.ContentUris;
+import android.util.Log;
+import android.webkit.URLUtil;
 
 import com.purenexus.ota.R;
 import com.purenexus.ota.misc.Constants;
 import com.purenexus.ota.service.UpdateCheckService;
-
-import java.io.BufferedWriter;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-import java.text.SimpleDateFormat;
-import java.io.DataOutputStream;
-import java.util.ArrayList;
-import android.os.Bundle;
-import android.os.Looper;
-import android.os.PowerManager;
-
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-
 import com.stericson.RootTools.BuildConfig;
 import com.stericson.RootTools.RootTools;
 
 import org.apache.commons.io.FileUtils;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class Utils {
 
@@ -78,10 +66,10 @@ public class Utils {
 
     public static File makeUpdateFolder() {
         File updatesFolder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + Constants.UPDATES_FOLDER);
-        if (!updatesFolder.exists()){
-            try{
+        if (!updatesFolder.exists()) {
+            try {
                 updatesFolder.mkdir();
-            }catch(Exception ex){
+            } catch (Exception ex) {
             }
         }
         return updatesFolder;
@@ -89,17 +77,17 @@ public class Utils {
 
     public static File makeTempFolder() {
         File tempFolder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + Constants.UPDATES_FOLDER + "/temp");
-        if (!tempFolder.exists()){
-            try{
+        if (!tempFolder.exists()) {
+            try {
                 tempFolder.mkdir();
-            }catch(Exception ex){
+            } catch (Exception ex) {
             }
         }
         return tempFolder;
     }
 
     public static boolean deleteDir(File dir) {
-        try{
+        try {
             if (dir.isDirectory()) {
                 String[] children = dir.list();
                 for (String aChildren : children) {
@@ -109,9 +97,9 @@ public class Utils {
                     }
                 }
             }
-        // The directory is now empty so delete it
+            // The directory is now empty so delete it
             return dir.delete();
-        }catch(Exception ex){
+        } catch (Exception ex) {
             return false; // failed to delete file
         }
     }
@@ -120,14 +108,14 @@ public class Utils {
         deleteDir(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + Constants.UPDATES_FOLDER + "/" + "temp"));
     }
 
-    public static void writeMD5File(String fileName,String md5) {
+    public static void writeMD5File(String fileName, String md5) {
         String path = makeUpdateFolder().getPath() + "/" + fileName + ".md5";
         File md5File = new File(path);
 
-        if (md5File.exists()){
-            try{
+        if (md5File.exists()) {
+            try {
                 md5File.delete();
-            }catch(Exception ex){
+            } catch (Exception ex) {
             }
         }
 
@@ -137,7 +125,7 @@ public class Utils {
     public static String readMD5File(String fileName) {
         String path = makeUpdateFolder().getPath() + "/" + fileName + ".md5";
         File md5File = new File(path);
-        if (!md5File.exists()){
+        if (!md5File.exists()) {
             return "";
         }
 
@@ -165,7 +153,7 @@ public class Utils {
 
         } catch (Exception e) {
             Log.e(TAG, "Error in readFileAsString");
-        } 
+        }
 
         return stringBuilder.toString();
     }
@@ -177,7 +165,7 @@ public class Utils {
         nm.cancel(R.string.not_download_success);
     }
 
-    public static boolean isOTAConfigured(){
+    public static boolean isOTAConfigured() {
         return SystemProperties.get("ro.ota.manifest") != null && !SystemProperties.get("ro.ota.manifest").isEmpty();
     }
 
@@ -190,7 +178,7 @@ public class Utils {
     }
 
     public static long getInstalledBuildDate() {
-        return getTimestampFromDateString(SystemProperties.get("ro.ota.build.date", ""),Constants.FILENAME_DATE_FORMAT);
+        return getTimestampFromDateString(SystemProperties.get("ro.ota.build.date", ""), Constants.FILENAME_DATE_FORMAT);
     }
 
     public static String getDateLocalized(Context context, long unixTimestamp) {
@@ -200,7 +188,7 @@ public class Utils {
         return f.format(date);
     }
 
-    public static long getTimestampFromDateString(String date,String format) {
+    public static long getTimestampFromDateString(String date, String format) {
         try {
             SimpleDateFormat formatter = new SimpleDateFormat(format);
             Date d = formatter.parse(date);
@@ -254,7 +242,7 @@ public class Utils {
             String filePath = "";
             String selection = null;
             String[] selectionArgs = null;
-            if (Build.VERSION.SDK_INT >= 19 && DocumentsContract.isDocumentUri(context,uri)) {
+            if (Build.VERSION.SDK_INT >= 19 && DocumentsContract.isDocumentUri(context, uri)) {
                 if (isExternalStorageDocument(uri)) {
                     final String docId = DocumentsContract.getDocumentId(uri);
                     final String[] split = docId.split(":");
@@ -268,7 +256,7 @@ public class Utils {
                 } else if (isDownloadsDocument(uri)) {
                     final String id = DocumentsContract.getDocumentId(uri);
                     uri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+                            Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
                 } else if (isMediaDocument(uri)) {
                     final String docId = DocumentsContract.getDocumentId(uri);
                     final String[] split = docId.split(":");
@@ -281,28 +269,30 @@ public class Utils {
                         uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
                     }
                     selection = "_id=?";
-                    selectionArgs = new String[] {
-                        split[1]
+                    selectionArgs = new String[]{
+                            split[1]
                     };
                 }
             }
             if ("content".equalsIgnoreCase(uri.getScheme())) {
                 String[] projection = {
-                    MediaStore.Images.Media.DATA
+                        MediaStore.Images.Media.DATA
                 };
                 Cursor cursor = null;
                 try {
                     cursor = context.getContentResolver()
-                    .query(uri, projection, selection, selectionArgs, null);
+                            .query(uri, projection, selection, selectionArgs, null);
                     int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                     if (cursor.moveToFirst()) {
                         return cursor.getString(column_index);
                     }
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             } else if ("file".equalsIgnoreCase(uri.getScheme())) {
                 return uri.getPath();
             }
-        } catch (Exception ex) {}
+        } catch (Exception ex) {
+        }
 
         return null;
     }
@@ -331,7 +321,7 @@ public class Utils {
     public static boolean copyFile(File sourceFile, File destFile) {
         try {
             FileUtils.copyFile(sourceFile, destFile);
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
         return true;
@@ -343,9 +333,9 @@ public class Utils {
 
     public static String shell(String cmd, boolean root) {
         String out = "";
-        ArrayList<String> r = system(root ? getSuBin() : "sh",cmd).getStringArrayList("out");
-        for(String l: r) {
-            out += l+"\n";
+        ArrayList<String> r = system(root ? getSuBin() : "sh", cmd).getStringArrayList("out");
+        for (String l : r) {
+            out += l + "\n";
         }
         return out;
     }
@@ -353,23 +343,23 @@ public class Utils {
     public static boolean getRoot() {
         return RootTools.isAccessGiven();
     }
-    
+
     public static boolean isRootAvailable() {
         return RootTools.isRootAvailable();
     }
-    
-    private static void rebootPhone(Context context, String type) { 
+
+    private static void rebootPhone(Context context, String type) {
         try {
             PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
             powerManager.reboot("recovery");
         } catch (Exception e) {
-            Log.e("Tools", "reboot '"+type+"' error: "+e.getMessage());
-            shell("reboot "+type, true);
+            Log.e("Tools", "reboot '" + type + "' error: " + e.getMessage());
+            shell("reboot " + type, true);
         }
     }
-    
+
     private static String getSuBin() {
-        if (new File("/system/xbin","su").exists()) {
+        if (new File("/system/xbin", "su").exists()) {
             return "/system/xbin/su";
         }
         if (RootTools.isRootAvailable()) {
@@ -377,9 +367,9 @@ public class Utils {
         }
         return "sh";
     }
-    
+
     private static Bundle system(String shell, String command) {
-        
+
         ArrayList<String> res = new ArrayList<String>();
         ArrayList<String> err = new ArrayList<String>();
         boolean success = false;
@@ -393,13 +383,13 @@ public class Utils {
             STDIN.flush();
             STDIN.writeBytes("exit\n");
             STDIN.flush();
-            
+
             process.waitFor();
             if (process.exitValue() == 255) {
-                if (BuildConfig.DEBUG) Log.e(shell,"SU was probably denied! Exit value is 255");
+                if (BuildConfig.DEBUG) Log.e(shell, "SU was probably denied! Exit value is 255");
                 err.add("SU was probably denied! Exit value is 255");
             }
-            
+
             while (STDOUT.ready()) {
                 String read = STDOUT.readLine();
                 if (BuildConfig.DEBUG) Log.d(shell, read);
@@ -410,20 +400,20 @@ public class Utils {
                 if (BuildConfig.DEBUG) Log.e(shell, read);
                 err.add(read);
             }
-            
+
             process.destroy();
             success = true;
             if (err.size() > 0) {
                 success = false;
             }
         } catch (IOException e) {
-            if (BuildConfig.DEBUG) Log.e(shell,"IOException: "+e.getMessage());
-            err.add("IOException: "+e.getMessage());
+            if (BuildConfig.DEBUG) Log.e(shell, "IOException: " + e.getMessage());
+            err.add("IOException: " + e.getMessage());
         } catch (InterruptedException e) {
-            if (BuildConfig.DEBUG) Log.e(shell,"InterruptedException: "+e.getMessage());
-            err.add("InterruptedException: "+e.getMessage());
+            if (BuildConfig.DEBUG) Log.e(shell, "InterruptedException: " + e.getMessage());
+            err.add("InterruptedException: " + e.getMessage());
         }
-        if (BuildConfig.DEBUG) Log.d(shell,"END");
+        if (BuildConfig.DEBUG) Log.d(shell, "END");
         Bundle r = new Bundle();
         r.putBoolean("success", success);
         r.putString("cmd", command);
@@ -433,7 +423,7 @@ public class Utils {
         return r;
     }
 
-    public static boolean isValidURL(String url){
+    public static boolean isValidURL(String url) {
         return URLUtil.isValidUrl(url);
     }
 

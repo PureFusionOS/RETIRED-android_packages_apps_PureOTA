@@ -31,20 +31,6 @@ import com.purenexus.ota.R;
 
 public class ListSwipeItem extends RelativeLayout {
 
-    private enum SwipeState {
-        IDLE, // Item is not moving
-        SWIPING, // Item is moving because the user is swiping with the finger
-        ANIMATING // Item is animating
-    }
-
-    public enum SwipeDirection {
-        LEFT, RIGHT, LEFT_AND_RIGHT, NONE
-    }
-
-    public enum SwipeInStyle {
-        APPEAR, SLIDE
-    }
-
     private View mLeftView;
     private View mRightView;
     private View mSwipeView;
@@ -59,14 +45,11 @@ public class ListSwipeItem extends RelativeLayout {
     private int mRightViewId;
     private SwipeDirection mSwipeDirection = SwipeDirection.LEFT_AND_RIGHT;
     private SwipeInStyle mSwipeInStyle = SwipeInStyle.APPEAR;
-
     // Used to report swiped distance to listener. This is will be set at the start of the swipe and reset at the end.
     private ListSwipeHelper.OnSwipeListener mSwipeListener;
-
     public ListSwipeItem(Context context) {
         super(context);
     }
-
     public ListSwipeItem(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
@@ -115,12 +98,12 @@ public class ListSwipeItem extends RelativeLayout {
         mSwipeInStyle = style;
     }
 
-    public void setSupportedSwipeDirection(SwipeDirection swipeDirection) {
-        mSwipeDirection = swipeDirection;
-    }
-
     public SwipeDirection getSupportedSwipeDirection() {
         return mSwipeDirection;
+    }
+
+    public void setSupportedSwipeDirection(SwipeDirection swipeDirection) {
+        mSwipeDirection = swipeDirection;
     }
 
     void setSwipeListener(ListSwipeHelper.OnSwipeListener listener) {
@@ -313,5 +296,19 @@ public class ListSwipeItem extends RelativeLayout {
             mViewHolder.setIsRecyclable(false);
         }
         swipeTranslationByX(dx);
+    }
+
+    private enum SwipeState {
+        IDLE, // Item is not moving
+        SWIPING, // Item is moving because the user is swiping with the finger
+        ANIMATING // Item is animating
+    }
+
+    public enum SwipeDirection {
+        LEFT, RIGHT, LEFT_AND_RIGHT, NONE
+    }
+
+    public enum SwipeInStyle {
+        APPEAR, SLIDE
     }
 }

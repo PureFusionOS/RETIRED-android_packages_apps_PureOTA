@@ -9,42 +9,32 @@
 package com.purenexus.ota;
 
 import android.content.Intent;
-import android.os.Build;
+import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
-
-import com.purenexus.ota.misc.Constants;
-import com.purenexus.ota.utils.Utils;
-
+import android.preference.PreferenceScreen;
+import android.support.annotation.LayoutRes;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.MenuInflater;
 import android.widget.Toast;
-import android.content.res.Configuration;
-import android.support.annotation.LayoutRes;
-import android.preference.Preference;
-import android.preference.PreferenceScreen;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.LinkedList;
-import android.net.Uri;
+import java.util.Map;
 
 
 public class AddonsActivity extends PreferenceActivity implements Preference.OnPreferenceClickListener {
 
     private AppCompatDelegate mDelegate;
     private PreferenceScreen preferenceScreen;
-    private List<Map<String,String>> addons;
+    private List<Map<String, String>> addons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +45,12 @@ public class AddonsActivity extends PreferenceActivity implements Preference.OnP
         preferenceScreen = getPreferenceScreen();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        try{
-            addons = (ArrayList<Map<String,String>>) getIntent().getSerializableExtra("addons");
-        }catch(Exception ex){
+        try {
+            addons = (ArrayList<Map<String, String>>) getIntent().getSerializableExtra("addons");
+        } catch (Exception ex) {
         }
-        try{
-            if (addons.size() > 0){
+        try {
+            if (addons.size() > 0) {
                 preferenceScreen.removeAll();
                 for (Map<String, String> addon : addons) {
                     Preference preference = new Preference(preferenceScreen.getContext());
@@ -70,11 +60,11 @@ public class AddonsActivity extends PreferenceActivity implements Preference.OnP
                     preference.setOnPreferenceClickListener(this);
                     preferenceScreen.addPreference(preference);
                 }
-            }else{
+            } else {
                 Toast.makeText(AddonsActivity.this, getString(R.string.addons_error), Toast.LENGTH_SHORT).show();
                 finish();
             }
-        }catch(Exception ex){
+        } catch (Exception ex) {
             Toast.makeText(AddonsActivity.this, getString(R.string.addons_error), Toast.LENGTH_SHORT).show();
             finish();
         }
@@ -84,22 +74,22 @@ public class AddonsActivity extends PreferenceActivity implements Preference.OnP
     @Override
     public boolean onPreferenceClick(Preference preference) {
         String key;
-        try{
+        try {
             key = preference.getKey();
-            if (key == null){
+            if (key == null) {
                 key = "";
             }
-        }catch(Exception ex){
+        } catch (Exception ex) {
             key = "";
         }
 
-        if (key.startsWith("addon_")){
+        if (key.startsWith("addon_")) {
             String url = key.substring(6);
-            try{
-                Intent intent = new Intent(Intent.ACTION_VIEW,Uri.parse(url));
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 Toast.makeText(AddonsActivity.this, getString(R.string.error_open_url), Toast.LENGTH_SHORT).show();
             }
         }
@@ -110,8 +100,8 @@ public class AddonsActivity extends PreferenceActivity implements Preference.OnP
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-            finish();
-            return true;
+                finish();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

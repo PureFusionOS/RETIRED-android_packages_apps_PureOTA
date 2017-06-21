@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
@@ -23,8 +24,6 @@ import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.os.Handler;
-import java.lang.Runnable;
 
 import com.purenexus.ota.misc.Constants;
 import com.purenexus.ota.utils.Utils;
@@ -85,7 +84,7 @@ public class UpdatesActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (prefs.getLong(Constants.LAST_UPDATE_CHECK_PREF, 0) == 0){ //never checked
+                if (prefs.getLong(Constants.LAST_UPDATE_CHECK_PREF, 0) == 0) { //never checked
                     if (mSettingsFragment != null) {
                         mSettingsFragment.checkForUpdates();
                         updateHeader();
@@ -127,11 +126,11 @@ public class UpdatesActivity extends AppCompatActivity {
                     mSettingsFragment.confirmDeleteAll();
                 }
                 break;
-                case R.id.menu_install:
-                try{
+            case R.id.menu_install:
+                try {
                     Intent intent = new Intent(UpdatesActivity.this, InstallActivity.class);
                     startActivity(intent);
-                }catch (Exception ex){
+                } catch (Exception ex) {
 
                 }
                 break;

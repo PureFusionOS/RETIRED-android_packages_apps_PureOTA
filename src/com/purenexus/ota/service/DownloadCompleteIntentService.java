@@ -19,8 +19,8 @@ import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
 import com.purenexus.ota.R;
-import com.purenexus.ota.UpdatesActivity;
 import com.purenexus.ota.UpdateApplication;
+import com.purenexus.ota.UpdatesActivity;
 import com.purenexus.ota.UpdatesSettings;
 import com.purenexus.ota.misc.Constants;
 import com.purenexus.ota.receiver.DownloadNotifier;
@@ -38,14 +38,14 @@ public class DownloadCompleteIntentService extends IntentService {
 
     private DownloadManager mDm;
 
+    public DownloadCompleteIntentService() {
+        super(DownloadCompleteIntentService.class.getSimpleName());
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         mDm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-    }
-
-    public DownloadCompleteIntentService() {
-        super(DownloadCompleteIntentService.class.getSimpleName());
     }
 
     @Override
@@ -69,13 +69,13 @@ public class DownloadCompleteIntentService extends IntentService {
             File destFileTmp = new File(destPath + Constants.DOWNLOAD_TMP_EXT);
 
             try (
-                FileOutputStream outStream = new FileOutputStream(destFileTmp);
+                    FileOutputStream outStream = new FileOutputStream(destFileTmp);
 
-                ParcelFileDescriptor file = mDm.openDownloadedFile(id);
-                FileInputStream inStream = new FileInputStream(file.getFileDescriptor());
+                    ParcelFileDescriptor file = mDm.openDownloadedFile(id);
+                    FileInputStream inStream = new FileInputStream(file.getFileDescriptor());
 
-                FileChannel inChannel = inStream.getChannel();
-                FileChannel outChannel = outStream.getChannel();
+                    FileChannel inChannel = inStream.getChannel();
+                    FileChannel outChannel = outStream.getChannel();
             ) {
                 inChannel.transferTo(0, file.getStatSize(), outChannel);
             } catch (IOException e) {

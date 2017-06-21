@@ -27,35 +27,12 @@ import android.view.ViewConfiguration;
 
 public class ListSwipeHelper extends RecyclerView.OnScrollListener implements RecyclerView.OnItemTouchListener {
 
-    public static abstract class OnSwipeListenerAdapter implements OnSwipeListener {
-        @Override
-        public void onItemSwipeStarted(ListSwipeItem item) {
-        }
-
-        @Override
-        public void onItemSwipeEnded(ListSwipeItem item, ListSwipeItem.SwipeDirection swipedDirection) {
-        }
-
-        @Override
-        public void onItemSwiping(ListSwipeItem item, float swipedDistanceX) {
-        }
-    }
-
-    public interface OnSwipeListener {
-        void onItemSwipeStarted(ListSwipeItem item);
-
-        void onItemSwipeEnded(ListSwipeItem item, ListSwipeItem.SwipeDirection swipedDirection);
-
-        void onItemSwiping(ListSwipeItem item, float swipedDistanceX);
-    }
-
     private GestureListener mGestureListener;
     private GestureDetector mGestureDetector;
     private ListSwipeItem mSwipeView;
     private RecyclerView mRecyclerView;
     private OnSwipeListener mSwipeListener;
     private int mTouchSlop;
-
     public ListSwipeHelper(Context applicationContext, OnSwipeListener listener) {
         mSwipeListener = listener;
         mGestureListener = new GestureListener();
@@ -144,6 +121,28 @@ public class ListSwipeHelper extends RecyclerView.OnScrollListener implements Re
 
     public void setSwipeListener(ListSwipeHelper.OnSwipeListener listener) {
         mSwipeListener = listener;
+    }
+
+    public interface OnSwipeListener {
+        void onItemSwipeStarted(ListSwipeItem item);
+
+        void onItemSwipeEnded(ListSwipeItem item, ListSwipeItem.SwipeDirection swipedDirection);
+
+        void onItemSwiping(ListSwipeItem item, float swipedDistanceX);
+    }
+
+    public static abstract class OnSwipeListenerAdapter implements OnSwipeListener {
+        @Override
+        public void onItemSwipeStarted(ListSwipeItem item) {
+        }
+
+        @Override
+        public void onItemSwipeEnded(ListSwipeItem item, ListSwipeItem.SwipeDirection swipedDirection) {
+        }
+
+        @Override
+        public void onItemSwiping(ListSwipeItem item, float swipedDistanceX) {
+        }
     }
 
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
