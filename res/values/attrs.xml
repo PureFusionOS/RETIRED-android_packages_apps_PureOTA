@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="ListSwipeItem">
-        <attr name="swipeViewId" format="integer"/>
-        <attr name="leftViewId" format="integer"/>
-        <attr name="rightViewId" format="integer"/>
+        <attr name="swipeViewId" format="integer" />
+        <attr name="leftViewId" format="integer" />
+        <attr name="rightViewId" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="FloatingActionButton">

@@ -163,24 +163,24 @@ public class DragItem {
         updatePosition();
     }
 
+    float getX() {
+        return mPosX;
+    }
+
     @SuppressWarnings("unused")
     void setX(float x) {
         mPosX = x;
         updatePosition();
     }
 
+    float getY() {
+        return mPosY;
+    }
+
     @SuppressWarnings("unused")
     void setY(float y) {
         mPosY = y;
         updatePosition();
-    }
-
-    float getX() {
-        return mPosX;
-    }
-
-    float getY() {
-        return mPosY;
     }
 
     void setPosition(float touchX, float touchY) {

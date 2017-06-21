@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2017 Henrique Silva
 
      Licensed under the GNU GPLv2 license
@@ -7,7 +6,7 @@
      The text of the license can be found in the LICENSE file
      or at https://www.gnu.org/licenses/gpl-2.0.txt
    -->
-   <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
     <!-- Changelog -->
     <string name="changelog">Lista de mudanças</string>
     <string name="changelog_loading">Carregando a lista de mudanças...</string>
@@ -66,4 +65,4 @@
     <string name="copy_failed">Falha ao copiar o arquivo %1$s.\n\nCertifique-se de que o dispositivo tem armazenamento suficiente e que o aplicativo tem permissões de gravação.</string>
     <string name="install_dialog_message">Tem certeza de que deseja continuar? Isso funciona com TWRP e algumas recuperações CWM (não oficiais) personalizadas.\n\nRoot é necessário.</string>
     <string name="install_write_ors_failed_dialog_message">Falha ao gravar script de recuperação, você deseja reinicializar e instalar manualmente ?</string>
-  </resources>
+</resources>

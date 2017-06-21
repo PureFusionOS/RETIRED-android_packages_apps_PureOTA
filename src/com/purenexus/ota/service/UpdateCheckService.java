@@ -15,8 +15,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.os.Build;
-import android.os.Parcelable;
 import android.os.SystemProperties;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -27,41 +25,29 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-
 import com.purenexus.ota.R;
 import com.purenexus.ota.UpdateApplication;
 import com.purenexus.ota.UpdatesActivity;
-import com.purenexus.ota.requests.UpdatesJsonObjectRequest;
 import com.purenexus.ota.UpdatesSettings;
 import com.purenexus.ota.misc.Constants;
 import com.purenexus.ota.misc.State;
 import com.purenexus.ota.misc.UpdateInfo;
-import com.purenexus.ota.receiver.DownloadReceiver;
+import com.purenexus.ota.requests.UpdatesJsonObjectRequest;
 import com.purenexus.ota.utils.Utils;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URI;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UpdateCheckService extends IntentService
         implements Response.ErrorListener, Response.Listener<JSONObject> {
 
-    private static final String TAG = "UpdateCheckService";
-
     // request actions
     public static final String ACTION_CHECK = "com.purenexus.ota.action.CHECK";
     public static final String ACTION_CANCEL_CHECK = "com.purenexus.ota.action.CANCEL_CHECK";
-
     // broadcast actions
     public static final String ACTION_CHECK_FINISHED = "com.purenexus.ota.action.UPDATE_CHECK_FINISHED";
     // extra for ACTION_CHECK_FINISHED: total amount of found updates
@@ -70,7 +56,7 @@ public class UpdateCheckService extends IntentService
     public static final String EXTRA_REAL_UPDATE_COUNT = "real_update_count";
     // extra for ACTION_CHECK_FINISHED: amount of updates that were found for the first time
     public static final String EXTRA_NEW_UPDATE_COUNT = "new_update_count";
-
+    private static final String TAG = "UpdateCheckService";
     // max. number of updates listed in the expanded notification
     private static final int EXPANDED_NOTIF_UPDATE_COUNT = 4;
 
@@ -103,7 +89,7 @@ public class UpdateCheckService extends IntentService
     }
 
     private void recordAvailableUpdates(LinkedList<UpdateInfo> availableUpdates,
-            Intent finishedIntent) {
+                                        Intent finishedIntent) {
 
         if (availableUpdates == null) {
             sendBroadcast(finishedIntent);
@@ -194,7 +180,7 @@ public class UpdateCheckService extends IntentService
                 Utils.getUserAgentString(this), null, this, this);
         // Improve request error tolerance
         request.setRetryPolicy(new DefaultRetryPolicy(UPDATE_REQUEST_TIMEOUT,
-                    UPDATE_REQUEST_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                UPDATE_REQUEST_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         // Set the tag for the request, reuse logging tag
         request.setTag(TAG);
 
@@ -208,25 +194,25 @@ public class UpdateCheckService extends IntentService
 
             String addons;
 
-            try{
+            try {
                 addons = obj.getJSONArray("addons").toString();
-            }catch(Exception e2){
+            } catch (Exception e2) {
                 addons = "[]";
             }
 
             UpdateInfo ui = new UpdateInfo.Builder()
-                .setFileName(obj.getString("filename"))
-                .setFilesize(obj.getLong("filesize"))
-                .setBuildDate(obj.getString("build_date"))
-                .setMD5(obj.getString("md5"))
-                .setDeveloper(obj.isNull("developer") ? "" : obj.getString("developer"))
-                .setDownloadUrl(obj.getString("url"))
-                .setChangelogUrl(obj.isNull("changelog_url") ? "" : obj.getString("changelog_url"))
-                .setDonateUrl(obj.isNull("donate_url") ? "" : obj.getString("donate_url"))
-                .setWebsiteUrl(obj.isNull("website_url") ? "" : obj.getString("website_url"))
-                .setAddons(addons)
-                .setAndroidVersion(obj.getString("android_version"))
-                .build();
+                    .setFileName(obj.getString("filename"))
+                    .setFilesize(obj.getLong("filesize"))
+                    .setBuildDate(obj.getString("build_date"))
+                    .setMD5(obj.getString("md5"))
+                    .setDeveloper(obj.isNull("developer") ? "" : obj.getString("developer"))
+                    .setDownloadUrl(obj.getString("url"))
+                    .setChangelogUrl(obj.isNull("changelog_url") ? "" : obj.getString("changelog_url"))
+                    .setDonateUrl(obj.isNull("donate_url") ? "" : obj.getString("donate_url"))
+                    .setWebsiteUrl(obj.isNull("website_url") ? "" : obj.getString("website_url"))
+                    .setAddons(addons)
+                    .setAndroidVersion(obj.getString("android_version"))
+                    .build();
             updates.add(ui);
         } catch (JSONException e) {
             Log.e(TAG, "Error in JSON result", e);

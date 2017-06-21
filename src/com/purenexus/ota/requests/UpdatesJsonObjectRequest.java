@@ -13,6 +13,7 @@ package com.purenexus.ota.requests;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
+
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class UpdatesJsonObjectRequest extends JsonObjectRequest {
     private HashMap<String, String> mHeaders = new HashMap<String, String>();
 
     public UpdatesJsonObjectRequest(String url, String userAgent, JSONObject jsonRequest,
-            Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+                                    Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         super(url, jsonRequest, listener, errorListener);
         mUserAgent = userAgent;
     }

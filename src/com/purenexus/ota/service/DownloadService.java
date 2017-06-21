@@ -23,7 +23,6 @@ import android.util.Log;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-
 import com.purenexus.ota.R;
 import com.purenexus.ota.misc.Constants;
 import com.purenexus.ota.misc.UpdateInfo;
@@ -41,14 +40,14 @@ public class DownloadService extends IntentService
     private SharedPreferences mPrefs;
     private UpdateInfo mInfo = null;
 
+    public DownloadService() {
+        super(TAG);
+    }
+
     public static void start(Context context, UpdateInfo ui) {
         Intent intent = new Intent(context, DownloadService.class);
         intent.putExtra(EXTRA_UPDATE_INFO, (Parcelable) ui);
         context.startService(intent);
-    }
-
-    public DownloadService() {
-        super(TAG);
     }
 
     @Override

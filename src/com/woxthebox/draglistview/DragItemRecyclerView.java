@@ -31,24 +31,6 @@ import android.view.ViewConfiguration;
 
 public class DragItemRecyclerView extends RecyclerView implements AutoScroller.AutoScrollListener {
 
-    public interface DragItemListener {
-        void onDragStarted(int itemPosition, float x, float y);
-
-        void onDragging(int itemPosition, float x, float y);
-
-        void onDragEnded(int newItemPosition);
-    }
-
-    public interface DragItemCallback {
-        boolean canDragItemAtPosition(int dragPosition);
-
-        boolean canDropItemAtPosition(int dropPosition);
-    }
-
-    private enum DragState {
-        DRAG_STARTED, DRAGGING, DRAG_ENDED
-    }
-
     private AutoScroller mAutoScroller;
     private DragItemListener mListener;
     private DragItemCallback mDragCallback;
@@ -68,17 +50,14 @@ public class DragItemRecyclerView extends RecyclerView implements AutoScroller.A
     private boolean mScrollingEnabled = true;
     private boolean mDisableReorderWhenDragging;
     private boolean mDragEnabled = true;
-
     public DragItemRecyclerView(Context context) {
         super(context);
         init();
     }
-
     public DragItemRecyclerView(Context context, AttributeSet attrs) {
         super(context, attrs, 0);
         init();
     }
-
     public DragItemRecyclerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
@@ -139,12 +118,12 @@ public class DragItemRecyclerView extends RecyclerView implements AutoScroller.A
         return super.onInterceptTouchEvent(event);
     }
 
-    void setDragEnabled(boolean enabled) {
-        mDragEnabled = enabled;
-    }
-
     boolean isDragEnabled() {
         return mDragEnabled;
+    }
+
+    void setDragEnabled(boolean enabled) {
+        mDragEnabled = enabled;
     }
 
     void setCanNotDragAboveTopItem(boolean canNotDragAboveTop) {
@@ -506,5 +485,23 @@ public class DragItemRecyclerView extends RecyclerView implements AutoScroller.A
 
         invalidate();
         return item;
+    }
+
+    private enum DragState {
+        DRAG_STARTED, DRAGGING, DRAG_ENDED
+    }
+
+    public interface DragItemListener {
+        void onDragStarted(int itemPosition, float x, float y);
+
+        void onDragging(int itemPosition, float x, float y);
+
+        void onDragEnded(int newItemPosition);
+    }
+
+    public interface DragItemCallback {
+        boolean canDragItemAtPosition(int dragPosition);
+
+        boolean canDropItemAtPosition(int dropPosition);
     }
 }

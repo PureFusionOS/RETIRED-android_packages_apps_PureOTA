@@ -17,23 +17,20 @@
 
 package com.purenexus.ota.misc;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v4.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.content.DialogInterface;
 
+import com.purenexus.ota.InstallActivity;
+import com.purenexus.ota.R;
 import com.woxthebox.draglistview.DragItemAdapter;
 
 import java.util.ArrayList;
-
-import com.purenexus.ota.R;
-import com.purenexus.ota.InstallActivity;
 
 public class ItemAdapter extends DragItemAdapter<Pair<Long, String>, ItemAdapter.ViewHolder> {
 
@@ -42,7 +39,7 @@ public class ItemAdapter extends DragItemAdapter<Pair<Long, String>, ItemAdapter
     private boolean mDragOnLongPress;
     private Context mContext;
 
-    public ItemAdapter(ArrayList<Pair<Long, String>> list, int layoutId, int grabHandleId, boolean dragOnLongPress,Context context) {
+    public ItemAdapter(ArrayList<Pair<Long, String>> list, int layoutId, int grabHandleId, boolean dragOnLongPress, Context context) {
         mLayoutId = layoutId;
         mGrabHandleId = grabHandleId;
         mDragOnLongPress = dragOnLongPress;
@@ -68,31 +65,31 @@ public class ItemAdapter extends DragItemAdapter<Pair<Long, String>, ItemAdapter
             @Override
             public boolean onLongClick(View v) {
                 new AlertDialog.Builder(mContext)
-                .setTitle(R.string.delete_file_dialog_title)
-                .setMessage(mContext.getString(R.string.delete_file_dialog_message))
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                        .setTitle(R.string.delete_file_dialog_title)
+                        .setMessage(mContext.getString(R.string.delete_file_dialog_message))
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-                    Pair<Long, String> adapterItem = (Pair<Long, String>) holder.itemView.getTag();
-                    int pos = getPositionForItem(adapterItem);
-                    removeItem(pos);
-                        try{
-                            if (mItemList.size() > 0){
-                                ((InstallActivity)mContext).noFilesLayout.setVisibility(View.GONE);
-                            }else{
-                                ((InstallActivity)mContext).noFilesLayout.setVisibility(View.VISIBLE);
+                                Pair<Long, String> adapterItem = (Pair<Long, String>) holder.itemView.getTag();
+                                int pos = getPositionForItem(adapterItem);
+                                removeItem(pos);
+                                try {
+                                    if (mItemList.size() > 0) {
+                                        ((InstallActivity) mContext).noFilesLayout.setVisibility(View.GONE);
+                                    } else {
+                                        ((InstallActivity) mContext).noFilesLayout.setVisibility(View.VISIBLE);
+                                    }
+                                } catch (Exception ex) {
+                                }
                             }
-                        }catch(Exception ex){
-                        }
-                    }
-                })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
-                .show();
+                        })
+                        .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+                        .show();
                 return false;
             }
         });

@@ -8,48 +8,48 @@
  */
 package com.purenexus.ota;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.view.View;
-import android.widget.Toast;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.widget.CheckBox;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.app.Activity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
-import android.net.Uri;
-import android.view.Menu;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
-import java.io.File;
-import android.content.pm.PackageManager;
-import android.Manifest;
-import android.os.Build;
+import android.widget.Toast;
 
-import com.woxthebox.draglistview.DragListView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-
-
+import com.purenexus.ota.misc.Constants;
 import com.purenexus.ota.misc.ItemAdapter;
 import com.purenexus.ota.utils.Utils;
-import com.purenexus.ota.misc.Constants;
+import com.woxthebox.draglistview.DragListView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class InstallActivity extends AppCompatActivity {
 
+    private static final int READ_REQUEST_CODE = 8794;
+    private static String TAG = "InstallActivity";
+    private static int INSTALL_REQUEST_CODE = 9087;
+    private static int ADD_FILE_REQUEST_CODE = 9088;
+    public FrameLayout noFilesLayout;
     private ArrayList<Pair<Long, String>> mItemArray;
     private DragListView mDragListView;
     private ProgressDialog mProgressDialog;
@@ -58,19 +58,10 @@ public class InstallActivity extends AppCompatActivity {
     private FloatingActionButton fabRemoveAllFiles;
     private FloatingActionButton fabWipe;
     private FloatingActionButton fabInstall;
-    public FrameLayout noFilesLayout;
-
     private String rom_fileName = "";
     private String NEW_LINE = "\n";
     private StringBuilder mScript = new StringBuilder();
-
     private SharedPreferences mPrefs;
-    private static String TAG = "InstallActivity";
-
-    private static final int READ_REQUEST_CODE = 8794;
-
-    private static int INSTALL_REQUEST_CODE = 9087;
-    private static int ADD_FILE_REQUEST_CODE = 9088;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +87,7 @@ public class InstallActivity extends AppCompatActivity {
                 fab.close(true);
                 if (!isStoragePermissionGranted(ADD_FILE_REQUEST_CODE)) {
                     Toast.makeText(InstallActivity.this, getString(R.string.storage_permission_error), Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
                     performFileSearch();
                 }
             }
@@ -116,7 +107,7 @@ public class InstallActivity extends AppCompatActivity {
             public void onClick(View v) {
                 fab.close(true);
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View wipe_layout = inflater.inflate(R.layout.wipe_layout,null, false);
+                final View wipe_layout = inflater.inflate(R.layout.wipe_layout, null, false);
                 final CheckBox wipe_cache = (CheckBox) wipe_layout.findViewById(R.id.wipe_cache);
                 final CheckBox wipe_dalvik = (CheckBox) wipe_layout.findViewById(R.id.wipe_dalvik);
                 final CheckBox wipe_data = (CheckBox) wipe_layout.findViewById(R.id.wipe_data);
@@ -126,16 +117,16 @@ public class InstallActivity extends AppCompatActivity {
                 wipe_data.setChecked(mPrefs.getBoolean(Constants.WIPE_DATA_PREF, Constants.WIPE_DATA_BY_DEFAULT));
 
                 new AlertDialog.Builder(InstallActivity.this)
-                .setView(wipe_layout)
-                .setTitle(getString(R.string.fab_wipe_title))
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        mPrefs.edit().putBoolean(Constants.WIPE_CACHE_PREF, wipe_cache.isChecked()).apply();
-                        mPrefs.edit().putBoolean(Constants.WIPE_DALVIK_PREF, wipe_dalvik.isChecked()).apply();
-                        mPrefs.edit().putBoolean(Constants.WIPE_DATA_PREF, wipe_data.isChecked()).apply();
-                    }
-                })
-                .show();
+                        .setView(wipe_layout)
+                        .setTitle(getString(R.string.fab_wipe_title))
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                mPrefs.edit().putBoolean(Constants.WIPE_CACHE_PREF, wipe_cache.isChecked()).apply();
+                                mPrefs.edit().putBoolean(Constants.WIPE_DALVIK_PREF, wipe_dalvik.isChecked()).apply();
+                                mPrefs.edit().putBoolean(Constants.WIPE_DATA_PREF, wipe_data.isChecked()).apply();
+                            }
+                        })
+                        .show();
             }
         });
 
@@ -143,30 +134,30 @@ public class InstallActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 fab.close(true);
-                if (mItemArray.size() > 0){
+                if (mItemArray.size() > 0) {
                     new AlertDialog.Builder(InstallActivity.this)
-                    .setTitle(R.string.install_title)
-                    .setMessage(R.string.install_dialog_message)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (!isStoragePermissionGranted(INSTALL_REQUEST_CODE)) {
-                                Toast.makeText(InstallActivity.this, getString(R.string.storage_permission_error), Toast.LENGTH_SHORT).show();
-                            }else{
-                                checkRootPreInstall();
-                            }
-                        }
-                    })
-                    .setNegativeButton(R.string.dialog_cancel, null)
-                    .show();
-                }else{
+                            .setTitle(R.string.install_title)
+                            .setMessage(R.string.install_dialog_message)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (!isStoragePermissionGranted(INSTALL_REQUEST_CODE)) {
+                                        Toast.makeText(InstallActivity.this, getString(R.string.storage_permission_error), Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        checkRootPreInstall();
+                                    }
+                                }
+                            })
+                            .setNegativeButton(R.string.dialog_cancel, null)
+                            .show();
+                } else {
                     Toast.makeText(InstallActivity.this, getString(R.string.no_files), Toast.LENGTH_SHORT).show();
                 }
             }
         });
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
-            if(extras == null) {
+            if (extras == null) {
                 rom_fileName = null;
             } else {
                 rom_fileName = extras.getString("rom");
@@ -176,14 +167,14 @@ public class InstallActivity extends AppCompatActivity {
         }
 
         mItemArray = new ArrayList<>();
-        if (rom_fileName != null && !rom_fileName.isEmpty()){
+        if (rom_fileName != null && !rom_fileName.isEmpty()) {
             mItemArray.add(new Pair<>((long) 0, rom_fileName));
         }
 
         setupListRecyclerView();
     }
 
-    private void checkRootPreInstall(){
+    private void checkRootPreInstall() {
         new AsyncTask<Void, Void, Boolean>() {
             protected void onPreExecute() {
                 mProgressDialog = new ProgressDialog(InstallActivity.this);
@@ -192,6 +183,7 @@ public class InstallActivity extends AppCompatActivity {
                 mProgressDialog.setCancelable(false);
                 mProgressDialog.show();
             }
+
             protected Boolean doInBackground(Void... params) {
                 Boolean haveRootAccess = Utils.getRoot();
                 try {
@@ -200,18 +192,19 @@ public class InstallActivity extends AppCompatActivity {
                 }
                 return haveRootAccess;
             }
+
             protected void onPostExecute(Boolean result) {
-                if (mProgressDialog != null){
+                if (mProgressDialog != null) {
                     mProgressDialog.hide();
                     mProgressDialog = null;
                 }
-                if (!result){
+                if (!result) {
                     new AlertDialog.Builder(InstallActivity.this)
-                    .setTitle(R.string.available_reboot_manual_title)
-                    .setMessage(R.string.available_reboot_manual_message)
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show();
-                }else{
+                            .setTitle(R.string.available_reboot_manual_title)
+                            .setMessage(R.string.available_reboot_manual_message)
+                            .setPositiveButton(android.R.string.ok, null)
+                            .show();
+                } else {
                     doInstall();
                 }
 
@@ -219,19 +212,19 @@ public class InstallActivity extends AppCompatActivity {
         }.execute();
     }
 
-    private void doInstall(){
+    private void doInstall() {
         mScript = new StringBuilder();
-        if (mPrefs.getBoolean(Constants.WIPE_DATA_PREF, Constants.WIPE_DATA_BY_DEFAULT)){
+        if (mPrefs.getBoolean(Constants.WIPE_DATA_PREF, Constants.WIPE_DATA_BY_DEFAULT)) {
             mScript.append("wipe data").append(NEW_LINE);
         }
-        if (mPrefs.getBoolean(Constants.WIPE_CACHE_PREF, Constants.WIPE_CACHE_BY_DEFAULT)){
+        if (mPrefs.getBoolean(Constants.WIPE_CACHE_PREF, Constants.WIPE_CACHE_BY_DEFAULT)) {
             mScript.append("wipe cache").append(NEW_LINE);
         }
-        if (mPrefs.getBoolean(Constants.WIPE_DALVIK_PREF, Constants.WIPE_DALVIK_BY_DEFAULT)){
+        if (mPrefs.getBoolean(Constants.WIPE_DALVIK_PREF, Constants.WIPE_DALVIK_BY_DEFAULT)) {
             mScript.append("wipe dalvik").append(NEW_LINE);
         }
 
-        if (rom_fileName != null && !rom_fileName.isEmpty()){
+        if (rom_fileName != null && !rom_fileName.isEmpty()) {
             File file = new File(rom_fileName);
             mScript.append("install /sdcard/" + Constants.UPDATES_FOLDER + "/" + file.getName()).append(NEW_LINE);
         }
@@ -247,22 +240,23 @@ public class InstallActivity extends AppCompatActivity {
             }
 
             protected void onProgressUpdate(String... text) {
-                if (mProgressDialog != null){
+                if (mProgressDialog != null) {
                     mProgressDialog.setMessage(text[0]);
                 }
             }
+
             protected String doInBackground(Void... params) {
                 Utils.deleteTempFolder();
 
                 for (final Pair<Long, String> pair : mItemArray) {
-                    if (!pair.second.equals(rom_fileName)){
+                    if (!pair.second.equals(rom_fileName)) {
                         publishProgress(String.format(getString(R.string.copy_progress), pair.second));
                         File source = new File(pair.second);
                         String newSourceName = source.getName().replaceAll("[^a-zA-Z0-9.-]", "_");
                         File dest = new File(Utils.makeTempFolder().getPath() + "/" + newSourceName);
-                        if (!Utils.copyFile(source, dest)){
+                        if (!Utils.copyFile(source, dest)) {
                             return "ERROR;" + pair.second;
-                        }else{
+                        } else {
                             mScript.append("install /sdcard/" + Constants.UPDATES_FOLDER + "/temp/" + newSourceName).append(NEW_LINE);
                         }
                     }
@@ -283,59 +277,59 @@ public class InstallActivity extends AppCompatActivity {
 
                 boolean isScriptWritten = out.equals(scriptFinal) || out2.equals(scriptFinal);
 
-                if (out != null && !out.isEmpty() && isScriptWritten){
+                if (out != null && !out.isEmpty() && isScriptWritten) {
                     return "OK";
-                }else{
+                } else {
                     return "ERROR_WRITE_ORS";
                 }
             }
 
             protected void onPostExecute(String result) {
-                if (mProgressDialog != null){
+                if (mProgressDialog != null) {
                     mProgressDialog.hide();
                     mProgressDialog = null;
                 }
-                if (result.equals("OK")){
-                    try{
+                if (result.equals("OK")) {
+                    try {
                         Utils.recovery(InstallActivity.this);
-                    }catch(Exception ex){
+                    } catch (Exception ex) {
                     }
                     new AlertDialog.Builder(InstallActivity.this)
-                    .setTitle(R.string.restart_recovery)
-                    .setMessage(R.string.restart_recovery_error_message)
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show();
-                }else if (result.startsWith("ERROR;")){
-                    String path = result.substring(6);
-                    Utils.deleteTempFolder();
-                    mScript = new StringBuilder();
-                    new AlertDialog.Builder(InstallActivity.this)
-                    .setTitle(R.string.install_title)
-                    .setMessage(String.format(getString(R.string.copy_failed), path))
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show();
-                }else if (result.startsWith("ERROR_WRITE_ORS")){
-                    Utils.deleteTempFolder();
-                    mScript = new StringBuilder();
-                    new AlertDialog.Builder(InstallActivity.this)
-                    .setTitle(R.string.install_title)
-                    .setMessage(R.string.install_write_ors_failed_dialog_message)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            try{
-                                Utils.recovery(InstallActivity.this);
-                            }catch(Exception ex){
-                            }
-                            new AlertDialog.Builder(InstallActivity.this)
                             .setTitle(R.string.restart_recovery)
                             .setMessage(R.string.restart_recovery_error_message)
                             .setPositiveButton(android.R.string.ok, null)
                             .show();
-                        }
-                    })
-                    .setNegativeButton(R.string.dialog_cancel, null)
-                    .show();
+                } else if (result.startsWith("ERROR;")) {
+                    String path = result.substring(6);
+                    Utils.deleteTempFolder();
+                    mScript = new StringBuilder();
+                    new AlertDialog.Builder(InstallActivity.this)
+                            .setTitle(R.string.install_title)
+                            .setMessage(String.format(getString(R.string.copy_failed), path))
+                            .setPositiveButton(android.R.string.ok, null)
+                            .show();
+                } else if (result.startsWith("ERROR_WRITE_ORS")) {
+                    Utils.deleteTempFolder();
+                    mScript = new StringBuilder();
+                    new AlertDialog.Builder(InstallActivity.this)
+                            .setTitle(R.string.install_title)
+                            .setMessage(R.string.install_write_ors_failed_dialog_message)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    try {
+                                        Utils.recovery(InstallActivity.this);
+                                    } catch (Exception ex) {
+                                    }
+                                    new AlertDialog.Builder(InstallActivity.this)
+                                            .setTitle(R.string.restart_recovery)
+                                            .setMessage(R.string.restart_recovery_error_message)
+                                            .setPositiveButton(android.R.string.ok, null)
+                                            .show();
+                                }
+                            })
+                            .setNegativeButton(R.string.dialog_cancel, null)
+                            .show();
 
                 }
             }
@@ -353,9 +347,9 @@ public class InstallActivity extends AppCompatActivity {
         mDragListView.setLayoutManager(new LinearLayoutManager(InstallActivity.this));
         ItemAdapter listAdapter = new ItemAdapter(mItemArray, R.layout.list_item, R.id.image, false, InstallActivity.this);
         mDragListView.setAdapter(listAdapter, true);
-        if (mItemArray.size() > 0){
+        if (mItemArray.size() > 0) {
             noFilesLayout.setVisibility(View.GONE);
-        }else{
+        } else {
             noFilesLayout.setVisibility(View.VISIBLE);
         }
     }
@@ -364,9 +358,9 @@ public class InstallActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-            Utils.deleteTempFolder();
-            finish();
-            return true;
+                Utils.deleteTempFolder();
+                finish();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -376,7 +370,7 @@ public class InstallActivity extends AppCompatActivity {
         Utils.deleteTempFolder();
         finish();
         return;
-    }   
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
@@ -386,27 +380,27 @@ public class InstallActivity extends AppCompatActivity {
                 uri = resultData.getData();
                 String realPath = Utils.getRealPathFromURI(InstallActivity.this, uri);
                 Log.i(TAG, "Uri: " + uri.toString() + " realpath " + realPath);
-                if (realPath != null && !realPath.isEmpty()){
+                if (realPath != null && !realPath.isEmpty()) {
 
-                    if (realPath.endsWith(".zip")){
+                    if (realPath.endsWith(".zip")) {
 
-                       ArrayList<Pair<Long, String>> mTempItemArray;
-                       mTempItemArray = new ArrayList<>();
-                       Integer i = 0;
-                       for (Pair<Long, String> pair : mItemArray) {
-                        mTempItemArray.add(new Pair<>((long) i, pair.second));
-                        i++;
+                        ArrayList<Pair<Long, String>> mTempItemArray;
+                        mTempItemArray = new ArrayList<>();
+                        Integer i = 0;
+                        for (Pair<Long, String> pair : mItemArray) {
+                            mTempItemArray.add(new Pair<>((long) i, pair.second));
+                            i++;
+                        }
+                        mTempItemArray.add(new Pair<>((long) i, realPath));
+                        mItemArray = mTempItemArray;
+                        setupListRecyclerView();
+                    } else {
+                        Toast.makeText(InstallActivity.this, getString(R.string.file_not_allowed), Toast.LENGTH_SHORT).show();
                     }
-                    mTempItemArray.add(new Pair<>((long) i, realPath));
-                    mItemArray = mTempItemArray;
-                    setupListRecyclerView();
-                }else{
-                    Toast.makeText(InstallActivity.this, getString(R.string.file_not_allowed), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(InstallActivity.this, getString(R.string.file_get_path_error), Toast.LENGTH_SHORT).show();
                 }
-            }else{
-                Toast.makeText(InstallActivity.this, getString(R.string.file_get_path_error), Toast.LENGTH_SHORT).show();
             }
-        }
         }
     }
 
@@ -414,11 +408,11 @@ public class InstallActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 return true;
-            }else{
+            } else {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, requestCode);
                 return false;
             }
-        }else {
+        } else {
             return true;
         }
     }
@@ -426,10 +420,10 @@ public class InstallActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == INSTALL_REQUEST_CODE && grantResults[0]== PackageManager.PERMISSION_GRANTED){
+        if (requestCode == INSTALL_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             checkRootPreInstall();
         }
-        if(requestCode == ADD_FILE_REQUEST_CODE && grantResults[0]== PackageManager.PERMISSION_GRANTED){
+        if (requestCode == ADD_FILE_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             performFileSearch();
         }
     }

@@ -35,23 +35,13 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.Scroller;
 
-import java.util.ArrayList;
-
 import com.purenexus.ota.R;
+
+import java.util.ArrayList;
 
 import static android.support.v7.widget.RecyclerView.NO_POSITION;
 
 public class BoardView extends HorizontalScrollView implements AutoScroller.AutoScrollListener {
-
-    public interface BoardListener {
-        void onItemDragStarted(int column, int row);
-
-        void onItemChangedPosition(int oldColumn, int oldRow, int newColumn, int newRow);
-
-        void onItemChangedColumn(int oldColumn, int newColumn);
-
-        void onItemDragEnded(int fromColumn, int fromRow, int toColumn, int toRow);
-    }
 
     private static final int SCROLL_ANIMATION_DURATION = 325;
     private Scroller mScroller;
@@ -75,7 +65,6 @@ public class BoardView extends HorizontalScrollView implements AutoScroller.Auto
     private boolean mDragEnabled = true;
     private int mLastDragColumn = NO_POSITION;
     private int mLastDragRow = NO_POSITION;
-
     public BoardView(Context context) {
         super(context);
     }
@@ -613,6 +602,16 @@ public class BoardView extends HorizontalScrollView implements AutoScroller.Auto
         mLists.add(recyclerView);
         mColumnLayout.addView(layout);
         return recyclerView;
+    }
+
+    public interface BoardListener {
+        void onItemDragStarted(int column, int row);
+
+        void onItemChangedPosition(int oldColumn, int oldRow, int newColumn, int newRow);
+
+        void onItemChangedColumn(int oldColumn, int newColumn);
+
+        void onItemDragEnded(int fromColumn, int fromRow, int toColumn, int toRow);
     }
 
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {

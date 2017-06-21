@@ -16,7 +16,7 @@ import android.content.Intent;
 
 import com.purenexus.ota.UpdatesActivity;
 
-public class NotificationClickReceiver extends BroadcastReceiver{
+public class NotificationClickReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
