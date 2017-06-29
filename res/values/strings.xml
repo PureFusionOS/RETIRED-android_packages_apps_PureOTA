@@ -2,6 +2,7 @@
      Copyright (C) 2012-2015 The CyanogenMod Project
      Copyright (C) 2017 The LineageOS Project
      Copyright (C) 2017 Henrique Silva
+     Copyright (C) 2017 Pure Fusion OS
 
      Licensed under the GNU GPLv2 license
 
@@ -10,10 +11,10 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- General strings -->
-    <string name="app_name">PureNexus Updates</string>
-    <string name="display_name">PureNexus Updates</string>
+    <string name="app_name">Pure Fusion Updates</string>
+    <string name="display_name">Pure Fusion Updates</string>
     <string name="unknown">Unknown</string>
-    <string name="rom_name" translatable="false">PureNexus</string>
+    <string name="rom_name" translatable="false">PureFusionOS</string>
 
     <!-- Menu and dialog box strings -->
     <string name="menu_refresh">Refresh</string>
@@ -74,7 +75,7 @@
     <string name="delete_updates_success_message">All downloaded updates deleted</string>
 
     <!-- Header -->
-    <string name="header_os">PureNexus
+    <string name="header_os">Pure Fusion
 \n%1$s</string>
     <string name="header_summary">%1$s\n%2$s • Android %3$s\n%4$s</string>
     <string name="sysinfo_last_check">Last checked</string>
@@ -84,7 +85,7 @@
     <string name="type_downloaded">• Downloaded</string>
     <string name="type_downloading">• Downloading</string>
     <string name="type_completing">• Completing</string>
-    <string name="summary">%1$s\nPureNexus %2$s • Android %3$s</string>
+    <string name="summary">%1$s\nPure Fusion %2$s • Android %3$s</string>
     <string name="download_button">Download</string>
     <string name="install_button">Install</string>
 </resources>
