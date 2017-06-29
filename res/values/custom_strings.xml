@@ -23,7 +23,7 @@
     <string name="extras_category_title">Extras</string>
     <string name="developer_info_title">Maintainer(s)</string>
     <string name="donate_info_title">Donate</string>
-    <string name="donate_info_summary">Buy me a coffe</string>
+    <string name="donate_info_summary">Buy me a coffee</string>
     <string name="website_info_title">Forum</string>
     <string name="website_info_summary">View XDA thread</string>
     <string name="error_open_url">Failed to open URL in browser</string>
